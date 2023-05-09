@@ -65,23 +65,32 @@ func (c *Context) SetHeader(key string, value string) {
 
 func (c *Context) String(format string, values ...interface{}) {
 	c.SetHeader("Content-Type", "text/plain")
-	c.Writer.Write([]byte(fmt.Sprintf(format, values...)))
+	_, err := c.Writer.Write([]byte(fmt.Sprintf(format, values...)))
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (c *Context) JSON(obj interface{}) {
 	c.SetHeader("Content-Type", "application/json")
 	encoder := json.NewEncoder(c.Writer)
 	if err := encoder.Encode(obj); err != nil {
-		http.Error(c.Writer, err.Error(), 500)
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func (c *Context) Data(data []byte) {
 	c.Writer.WriteHeader(c.StatusCode)
-	c.Writer.Write(data)
+	_, err := c.Writer.Write(data)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (c *Context) HTML(html string) {
 	c.SetHeader("Content-Type", "text/html")
-	c.Writer.Write([]byte(html))
+	_, err := c.Writer.Write([]byte(html))
+	if err != nil {
+		http.Error(c.Writer, err.Error(), 500)
+	}
 }
