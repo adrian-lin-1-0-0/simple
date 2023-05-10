@@ -47,7 +47,7 @@ func main() {
 
 ```
 
-## Class Diagram (draft)
+## Class Diagram
 
 ```mermaid
 ---
@@ -55,21 +55,78 @@ title: Simple Web Framework
 ---
 classDiagram
 
+    note for Engine"
+        net/http
+
+        func ListenAndServe(addr string, handler Handler) error {
+            server := &Server{Addr: addr, Handler: handler}
+            return server.ListenAndServe()
+        }
+
+        type Handler interface {
+            ServeHTTP(ResponseWriter, *Request)
+        }
+    "
+
     class Engine{
-        
+        + ServeHTTP(http.ResponseWriter, *http.Request)
     }
-    class Router{
 
+    note for router "
+        method - http method , e.g. : 
+        GET,POST,PUT,DELETE
+    "
+
+    class router{
+        - handler(c : *Context)
+        - addRouter(method : String , fullPath : String ,handlers : HandlerFunc[])
     }
+
     class Context{
-        - Writer : http.ResponseWriter
-        - Req : *http.Request 
-        + JSON()
-        + String()
+        + Writer : http.ResponseWriter
+        + Req : *http.Request 
+        + Params : HashMap<String,String>
+        - handlers : HandlerFunc[]
     }
 
-    Engine o-- Router
-    Router o-- Context
+    note for node "
+        Trie tree node.
+        As shown in the diagram below (Trie Router).
+    "
+
+    class node{
+        - fullPath : String
+        - path : String
+        - child : *node[]
+        - wildChild : Boolean
+        - handlers : HandlerFunc[]
+    }
+
+    note for group "
+    All groups share the same Engine
+    "
+
+    class group{
+        - middleware : HandlerFunc[]
+        - parent : *group
+        - engine : *Engine
+    }
+
+    class HandlerFunc{
+        <<interface>> 
+        - handler(c : *Context)
+    }
+
+    node "1" o-- "0..*" node
+    group "1" o-- "0..*" group
+    router "1" o-- "0..*" node
+    Engine "1" o-- "1" router
+    router ..> Context
+    router ..> HandlerFunc
+    group "1" o-- "0..*" HandlerFunc
+    group "0..*" o-- "1" Engine
+    HandlerFunc ..> Context
+    Context "1" o-- "0..*" HandlerFunc
     
 ```
 
