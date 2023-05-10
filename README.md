@@ -75,7 +75,7 @@ classDiagram
         - handler(c : *Context)
     }
 
-    Simple "1" o-- "1*" group 
+    Simple "1" o-- "1" group 
     Simple "1" o-- "1" router 
     group "1" o-- "0..*" group
     node "1" o-- "0..*" node
