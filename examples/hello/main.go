@@ -14,7 +14,8 @@ func main() {
 
 	v1.GET("/hello", func(c *simple.Context) {
 		a := []int{1, 2, 3}
-		println(a[3])
+		//recovery
+		println(a[3]) // panic: runtime error: index out of range [3] with length 3
 		c.HTML("<h1>Hello v1</h1>")
 	})
 
@@ -24,7 +25,7 @@ func main() {
 		c.HTML("<h1>Hello v2</h1>")
 	})
 
-	r.Run(":9999", func() {
-		println("Server is running on port http://localhost:9999")
+	r.Run(":8888", func() {
+		println("Server is running on port http://localhost:8888")
 	})
 }

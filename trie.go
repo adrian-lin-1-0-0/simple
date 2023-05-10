@@ -1,11 +1,6 @@
 package simple
 
-import (
-	"strings"
-)
-
-type HandlerFunc func(*Context)
-type HandlersChain []HandlerFunc
+import "strings"
 
 type node struct {
 	fullPath  string

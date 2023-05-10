@@ -16,7 +16,7 @@ type Context struct {
 	Params     map[string]string
 	query      url.Values
 	index      int
-	handlers   []HandlerFunc
+	handlers   HandlersChain
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
