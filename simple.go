@@ -1,9 +1,13 @@
 package simple
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
 
 type Simple struct {
 	*group
+	groups []*group
 }
 
 func Default() *Simple {
@@ -13,18 +17,29 @@ func Default() *Simple {
 }
 
 func New() *Simple {
-	return &Simple{
-		&group{
-			prefix:     "/",
-			router:     newRouter(),
-			middleware: make(HandlersChain, 0),
-		},
+
+	s := &Simple{}
+	g := &group{
+		prefix:     "",
+		router:     newRouter(),
+		simple:     s,
+		middleware: make(HandlersChain, 0),
 	}
+	s.group = g
+	s.groups = []*group{g}
+	return s
 }
 
 func (s *Simple) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var middlewares []HandlerFunc
+
+	for _, group := range s.groups {
+		if strings.HasPrefix(r.URL.Path, group.prefix) {
+			middlewares = append(middlewares, group.middleware...)
+		}
+	}
 	context := newContext(w, r)
-	context.handlers = append(context.handlers, s.group.middleware...)
+	context.handlers = middlewares
 	s.handler(context)
 }
 

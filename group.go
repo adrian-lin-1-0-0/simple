@@ -1,21 +1,28 @@
 package simple
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type group struct {
 	prefix     string
 	middleware HandlersChain
+	simple     *Simple
 	parent     *group
 	router     *router
 }
 
 func (g *group) Group(prefix string, middleware ...HandlerFunc) *group {
-	return &group{
+	newGroup := &group{
 		prefix:     g.prefix + prefix,
-		middleware: append(g.middleware, middleware...),
+		middleware: middleware,
 		parent:     g,
 		router:     g.router,
+		simple:     g.simple,
 	}
+
+	g.simple.groups = append(g.simple.groups, newGroup)
+	return newGroup
 }
 
 func (g *group) Use(middleware ...HandlerFunc) *group {
