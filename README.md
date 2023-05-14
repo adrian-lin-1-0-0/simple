@@ -2,6 +2,10 @@
 
 Simple is a simple web framework written in Go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/adrian-lin-1-0-0/simple)](https://goreportcard.com/report/github.com/adrian-lin-1-0-0/simple)
+[![codebeat badge](https://codebeat.co/badges/a7787b30-93bb-4a83-953b-3ae554da357a)](https://codebeat.co/projects/github-com-adrian-lin-1-0-0-simple-master)
+
+
 ## Functionality
 - Layer 7 routing proxy
   > Enables more granular routing rules based on HTTP headers, cookies, or request bodies.
