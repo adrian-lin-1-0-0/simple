@@ -7,8 +7,8 @@ Simple is a simple web framework written in Go
 
 
 ## Functionality
-- Layer 7 routing proxy
-  > Enables more granular routing rules based on HTTP headers, cookies, or request bodies.
+- Layer 7 routing proxy (only URL path)
+  > Enables more granular routing rules based on HTTP URL paths.
 - Middleware
   > Allows users to define custom middleware functions to modify or enhance the request/response pipeline.
 - Panic recover
